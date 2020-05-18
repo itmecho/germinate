@@ -1,0 +1,11 @@
+{
+    "Parameter": {
+        "Name": "test.param",
+        "Type": "String",
+        "Value": "ssm value",
+        "Version": 1,
+        "LastModifiedDate": 1589799109.096,
+        "ARN": "arn:aws:ssm:us-east-1:0123456789000:parameter/test.param",
+        "DataType": "text"
+    }
+}

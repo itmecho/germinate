@@ -27,6 +27,6 @@ Currently supported sources:
 * `env` - Load values from environment variables
 * `awsssm` - Load values from the [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html)
 
-## Licence
+## License
 
 [GPL-3.0](https://github.com/itmecho/germinate/blob/master/LICENSE)

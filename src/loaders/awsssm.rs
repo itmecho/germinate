@@ -8,7 +8,7 @@
 //! let output = germinate::process(input);
 //! assert_eq!(String::from("SSM template: ssm value"), output);
 //! ```
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use rusoto_core::Region;
 use rusoto_ssm::{GetParameterRequest, Ssm, SsmClient};
 
@@ -45,19 +45,19 @@ impl AwsSsmLoader {
             Err(rusoto_core::RusotoError::Service(
                 rusoto_ssm::GetParameterError::ParameterNotFound(_),
             )) => {
-                return Err(anyhow::anyhow!("Parameter not found '{}'", name)
+                return Err(anyhow!("Parameter not found '{}'", name)
                     .context("Failed to fetch parameter from AWS SSM"))
             }
-            Err(e) => return Err(anyhow::anyhow!("Failed to fetch parameter: {}", e)),
+            Err(e) => return Err(anyhow!("Failed to fetch parameter: {}", e)),
         };
 
         let parameter = response
             .parameter
-            .ok_or(anyhow::anyhow!("Failed to get parameter"))?;
+            .ok_or_else(|| anyhow!("Failed to get parameter"))?;
 
         let value = parameter
             .value
-            .ok_or(anyhow::anyhow!("Parameter has no value"))?;
+            .ok_or_else(|| anyhow!("Parameter has no value"))?;
 
         Ok(value)
     }

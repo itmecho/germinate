@@ -11,7 +11,7 @@ A templating library for injecting variables from multiple external sources
 
 This is a simple example showing how to pull values from the environment
 
-```
+```rust
 use germinate::Seed;
 
 #[tokio::main]

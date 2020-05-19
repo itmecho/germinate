@@ -36,7 +36,7 @@ impl Seed {
     ///
     /// #[async_trait::async_trait]
     /// impl ValueLoader for LanguageLoader {
-    ///     async fn load(&self, key: &String) -> anyhow::Result<String> {
+    ///     async fn load(&self, key: &str) -> anyhow::Result<String> {
     ///         // Add your logic for loading the value here
     ///
     ///         Ok(match key.as_ref() {
@@ -61,11 +61,11 @@ impl Seed {
         self.loaders.insert(ValueSource::Custom(key), loader);
     }
 
-    fn get_loader(&mut self, source: &ValueSource) -> Result<&Box<dyn ValueLoader>> {
+    fn get_loader(&mut self, source: &ValueSource) -> Result<&dyn ValueLoader> {
         // If a loader with the given key exists, return it
         if self.loaders.contains_key(source) {
             // Unwrap should be safe here as we know the key exists
-            return Ok(self.loaders.get(source).unwrap());
+            return Ok(self.loaders.get(source).unwrap().as_ref());
         }
 
         // Instantiate a new loader for the given key. If the key is for a custom source, we return
@@ -86,7 +86,7 @@ impl Seed {
         self.loaders.insert(source.clone(), loader);
 
         // Return a reference to the newly created loader
-        Ok(self.loaders.get(source).unwrap())
+        Ok(self.loaders.get(source).unwrap().as_ref())
     }
 
     /// Parses the template string and generates a `HashMap` of key value replacements, loading the
@@ -182,7 +182,7 @@ mod test {
 
     #[async_trait::async_trait]
     impl ValueLoader for TestLoader {
-        async fn load(&self, _: &String) -> Result<String> {
+        async fn load(&self, _: &str) -> Result<String> {
             Ok(self.value.clone())
         }
     }

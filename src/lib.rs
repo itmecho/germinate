@@ -20,7 +20,7 @@ use anyhow::Result;
 /// allow non-blocking value loading
 #[async_trait::async_trait]
 pub trait ValueLoader {
-    async fn load(&self, key: &String) -> Result<String>;
+    async fn load(&self, key: &str) -> Result<String>;
 }
 
 /// This type represents the sources where a value can be loaded from

@@ -34,9 +34,9 @@ impl AwsSsmLoader {
 
     /// Loads a parameter from the Parameter Store and returns it as a `String`. Provides the
     /// `decrypt` argument to control whether or not the value should be decrypted
-    async fn get_parameter(&self, name: &String, decrypt: bool) -> Result<String> {
+    async fn get_parameter(&self, name: &str, decrypt: bool) -> Result<String> {
         let req = GetParameterRequest {
-            name: name.clone(),
+            name: name.to_string(),
             with_decryption: Some(decrypt),
         };
 
@@ -66,7 +66,7 @@ impl AwsSsmLoader {
 #[async_trait::async_trait]
 impl crate::ValueLoader for AwsSsmLoader {
     /// Loads a value from the Parameter Store and returns it as a `String`
-    async fn load(&self, key: &String) -> Result<String> {
+    async fn load(&self, key: &str) -> Result<String> {
         // TODO hard coded decrypt value
         // Options:
         //   flag --awsssm-decrypt - will only work if all values are encrypted
@@ -97,7 +97,7 @@ mod test {
         );
 
         let loader = AwsSsmLoader::with_client(mock_client);
-        let actual = loader.load(&"test.param".into()).await.unwrap();
+        let actual = loader.load("test.param").await.unwrap();
 
         assert_eq!(String::from("ssm value"), actual);
     }
@@ -114,7 +114,7 @@ mod test {
         );
 
         let loader = AwsSsmLoader::with_client(mock_client);
-        let actual = loader.load(&"test.param".into()).await;
+        let actual = loader.load("test.param").await;
 
         assert!(actual.is_err());
 

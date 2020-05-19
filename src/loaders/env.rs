@@ -16,8 +16,8 @@ impl EnvironmentLoader {
 impl crate::ValueLoader for EnvironmentLoader {
     /// Load a value from the environment. The key is the name of the environment variable
     /// containing the value
-    async fn load(&self, key: &String) -> Result<String> {
-        Ok(std::env::var(&key)?)
+    async fn load(&self, key: &str) -> Result<String> {
+        Ok(std::env::var(key)?)
     }
 }
 

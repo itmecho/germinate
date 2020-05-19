@@ -1,6 +1,8 @@
 //! Provides the ability to load values from the environment
 use anyhow::Result;
 
+pub(crate) const TEMPLATE_KEY: &'static str = "env";
+
 /// This type provides functionality to load values from environment variables
 pub struct EnvironmentLoader {}
 

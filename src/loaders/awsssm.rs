@@ -12,6 +12,8 @@ use anyhow::Result;
 use rusoto_core::Region;
 use rusoto_ssm::{GetParameterRequest, Ssm, SsmClient};
 
+pub(crate) const TEMPLATE_KEY: &'static str = "awsssm";
+
 /// This type provides functionality for loading values from [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html)
 pub struct AwsSsmLoader {
     client: rusoto_ssm::SsmClient,

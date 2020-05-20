@@ -7,6 +7,7 @@ use anyhow::{anyhow, Context, Result};
 use regex::Regex;
 use std::collections::HashMap;
 
+use crate::awsec2metadata::AwsEc2MetadataLoader;
 use crate::awsssm::AwsSsmLoader;
 use crate::env::EnvironmentLoader;
 
@@ -72,6 +73,7 @@ impl Seed {
         // an error as that should have been set using the add_custom_loader function before
         // parsing
         let loader: Box<dyn ValueLoader> = match source {
+            ValueSource::AwsEc2Metadata => Box::new(AwsEc2MetadataLoader::new()),
             ValueSource::AwsSsm => Box::new(AwsSsmLoader::new()),
             ValueSource::Environment => Box::new(EnvironmentLoader::new()),
             ValueSource::Custom(key) => return Err(
@@ -109,7 +111,7 @@ impl Seed {
     pub async fn parse(&mut self) -> Result<HashMap<String, String>> {
         let mut replacements = HashMap::new();
 
-        let pattern = Regex::new(r"(%([a-z]+):([^%]+)%)").unwrap();
+        let pattern = Regex::new(r"(%([a-z0-9]+):([^%]+)%)").unwrap();
 
         for capture in pattern.captures_iter(self.template.clone().as_ref()) {
             // capture[1] will be the find string. If the map contains the key then we have already

@@ -6,6 +6,7 @@ pub mod seed;
 
 pub use seed::Seed;
 
+use loaders::awsec2metadata;
 use loaders::awsssm;
 use loaders::env;
 
@@ -23,22 +24,18 @@ pub trait ValueLoader {
     async fn load(&self, key: &str) -> Result<String>;
 }
 
-/// This type represents the sources where a value can be loaded from
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub(crate) enum ValueSource {
-    /// This variant represents a value that is loaded from [AWS System Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html)
+    AwsEc2Metadata,
     AwsSsm,
-
-    /// This variant represents a value that it loaded from an environment variable
     Environment,
-
-    /// This variant allows for custom sources to be used that aren't managed by this library.
     Custom(String),
 }
 
 impl ValueSource {
     pub(crate) fn from<T: AsRef<str>>(key: T) -> Self {
         match key.as_ref() {
+            awsec2metadata::TEMPLATE_KEY => Self::AwsEc2Metadata,
             awsssm::TEMPLATE_KEY => Self::AwsSsm,
             env::TEMPLATE_KEY => Self::Environment,
             key => Self::Custom(key.to_string()),

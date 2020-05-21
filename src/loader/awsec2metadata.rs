@@ -47,7 +47,7 @@ impl<'a> AwsEc2MetadataLoader<'a> {
 }
 
 #[async_trait::async_trait]
-impl<'a> crate::Loader for AwsEc2MetadataLoader<'a> {
+impl crate::Loader for AwsEc2MetadataLoader<'_> {
     /// Loads a value from the AWS EC2 Metadata service and returns it as a `String`
     async fn load(&self, key: &str) -> Result<String> {
         self.get_value(key).await

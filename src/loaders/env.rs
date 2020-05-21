@@ -1,7 +1,9 @@
+//! Provides the ability to load values from the environment
 use anyhow::Result;
 
 pub(crate) const TEMPLATE_KEY: &str = "env";
 
+/// This type provides functionality to load values from environment variables
 pub struct EnvironmentLoader {}
 
 impl EnvironmentLoader {
@@ -12,6 +14,8 @@ impl EnvironmentLoader {
 
 #[async_trait::async_trait]
 impl crate::ValueLoader for EnvironmentLoader {
+    /// Load a value from the environment. The key is the name of the environment variable
+    /// containing the value
     async fn load(&self, key: &str) -> Result<String> {
         Ok(std::env::var(key)?)
     }

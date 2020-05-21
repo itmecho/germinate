@@ -1,24 +1,39 @@
+//! Provides the ability to asynchronously load values from the [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html)
+//!
+//! # Examples
+//!
+//! ```norun
+//! // assuming something like this: `aws ssm put-parameter --name my.param --value "ssm value"`
+//! let input = String::from("SSM template: %awsssm:my.param%");
+//! let output = germinate::process(input);
+//! assert_eq!(String::from("SSM template: ssm value"), output);
+//! ```
 use anyhow::{anyhow, Result};
 use rusoto_core::Region;
 use rusoto_ssm::{GetParameterRequest, Ssm, SsmClient};
 
 pub(crate) const TEMPLATE_KEY: &str = "awsssm";
 
+/// This type provides functionality for loading values from [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html)
 pub struct AwsSsmLoader {
     client: rusoto_ssm::SsmClient,
 }
 
 impl AwsSsmLoader {
+    /// Creates a new AwsSsmLoader with the default region
     pub fn new() -> Self {
         // TODO hard coded region - should be configurable
         let client = SsmClient::new(Region::default());
         Self::with_client(client)
     }
 
+    /// Creates a new AwsSsmLoader with the provided SsmClient
     pub fn with_client(client: SsmClient) -> Self {
         Self { client }
     }
 
+    /// Loads a parameter from the Parameter Store and returns it as a `String`. Provides the
+    /// `decrypt` argument to control whether or not the value should be decrypted
     async fn get_parameter(&self, name: &str, decrypt: bool) -> Result<String> {
         let req = GetParameterRequest {
             name: name.to_string(),
@@ -50,6 +65,7 @@ impl AwsSsmLoader {
 
 #[async_trait::async_trait]
 impl crate::ValueLoader for AwsSsmLoader {
+    /// Loads a value from the Parameter Store and returns it as a `String`
     async fn load(&self, key: &str) -> Result<String> {
         // TODO hard coded decrypt value
         // Options:

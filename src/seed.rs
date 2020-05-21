@@ -2,20 +2,20 @@
 //! relevant loaders.
 //!
 //! Allows for custom loaders to be used via the `add_custom_loader` method
-use crate::{ValueLoader, ValueSource};
+use crate::loader::{Loader, Source};
 use anyhow::{anyhow, Context, Result};
 use regex::Regex;
 use std::collections::HashMap;
 
-use crate::awsec2metadata::AwsEc2MetadataLoader;
-use crate::awsssm::AwsSsmLoader;
-use crate::env::EnvironmentLoader;
+use crate::loader::awsec2metadata::AwsEc2MetadataLoader;
+use crate::loader::awsssm::AwsSsmLoader;
+use crate::loader::env::EnvironmentLoader;
 
 /// A `Seed` is responsible for parsing the template string, loading the values, and optionally
 /// making the replacements via the germinate method
 pub struct Seed {
     template: String,
-    loaders: HashMap<ValueSource, Box<dyn ValueLoader>>,
+    loaders: HashMap<Source, Box<dyn Loader>>,
 }
 
 impl Seed {
@@ -31,16 +31,16 @@ impl Seed {
     ///
     /// # Example
     /// ```
-    /// use germinate::{Seed, ValueLoader};
+    /// use germinate::{Seed, Loader};
     ///
     /// struct LanguageLoader {}
     ///
     /// #[async_trait::async_trait]
-    /// impl ValueLoader for LanguageLoader {
+    /// impl Loader for LanguageLoader {
     ///     async fn load(&self, key: &str) -> anyhow::Result<String> {
     ///         // Add your logic for loading the value here
     ///
-    ///         Ok(match key.as_ref() {
+    ///         Ok(match key {
     ///             "go" => String::from("Go"),
     ///             _ => String::from("Rust"),
     ///         })
@@ -58,11 +58,11 @@ impl Seed {
     ///     assert_eq!(String::from("Hi John, Welcome to Rust! Say goodbye to Go..."), output);
     /// }
     /// ```
-    pub fn add_custom_loader(&mut self, key: String, loader: Box<dyn ValueLoader>) {
-        self.loaders.insert(ValueSource::Custom(key), loader);
+    pub fn add_custom_loader(&mut self, key: String, loader: Box<dyn Loader>) {
+        self.loaders.insert(Source::Custom(key), loader);
     }
 
-    fn get_loader(&mut self, source: &ValueSource) -> Result<&dyn ValueLoader> {
+    fn get_loader(&mut self, source: &Source) -> Result<&dyn Loader> {
         // If a loader with the given key exists, return it
         if self.loaders.contains_key(source) {
             // Unwrap should be safe here as we know the key exists
@@ -72,11 +72,11 @@ impl Seed {
         // Instantiate a new loader for the given key. If the key is for a custom source, we return
         // an error as that should have been set using the add_custom_loader function before
         // parsing
-        let loader: Box<dyn ValueLoader> = match source {
-            ValueSource::AwsEc2Metadata => Box::new(AwsEc2MetadataLoader::new()),
-            ValueSource::AwsSsm => Box::new(AwsSsmLoader::new()),
-            ValueSource::Environment => Box::new(EnvironmentLoader::new()),
-            ValueSource::Custom(key) => return Err(
+        let loader: Box<dyn Loader> = match source {
+            Source::AwsEc2Metadata => Box::new(AwsEc2MetadataLoader::new()),
+            Source::AwsSsm => Box::new(AwsSsmLoader::new()),
+            Source::Environment => Box::new(EnvironmentLoader::new()),
+            Source::Custom(key) => return Err(
                 anyhow!(
                     "Unsupported value source: {}. If you're using a custom source, make sure you added the loader before parsing",
                     key
@@ -120,7 +120,7 @@ impl Seed {
                 continue;
             }
 
-            let source = ValueSource::from(&capture[2]);
+            let source = Source::from(&capture[2]);
             let loader = self
                 .get_loader(&source)
                 .context("Failed to parse template string")?;
@@ -169,7 +169,7 @@ impl Seed {
 #[cfg(test)]
 mod test {
     use super::Seed;
-    use crate::ValueLoader;
+    use crate::Loader;
     use anyhow::Result;
 
     struct TestLoader {
@@ -183,7 +183,7 @@ mod test {
     }
 
     #[async_trait::async_trait]
-    impl ValueLoader for TestLoader {
+    impl Loader for TestLoader {
         async fn load(&self, _: &str) -> Result<String> {
             Ok(self.value.clone())
         }

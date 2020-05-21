@@ -21,7 +21,7 @@ impl EnvironmentLoader {
 }
 
 #[async_trait::async_trait]
-impl crate::ValueLoader for EnvironmentLoader {
+impl crate::Loader for EnvironmentLoader {
     /// Load a value from the environment. The key is the name of the environment variable
     /// containing the value
     async fn load(&self, key: &str) -> Result<String> {
@@ -32,7 +32,7 @@ impl crate::ValueLoader for EnvironmentLoader {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::ValueLoader;
+    use crate::Loader;
 
     #[tokio::test]
     async fn test_environment_loader() {

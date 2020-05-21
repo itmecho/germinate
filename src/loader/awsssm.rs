@@ -64,13 +64,13 @@ impl AwsSsmLoader {
 }
 
 #[async_trait::async_trait]
-impl crate::ValueLoader for AwsSsmLoader {
+impl crate::Loader for AwsSsmLoader {
     /// Loads a value from the Parameter Store and returns it as a `String`
     async fn load(&self, key: &str) -> Result<String> {
         // TODO hard coded decrypt value
         // Options:
         //   flag --awsssm-decrypt - will only work if all values are encrypted
-        //   separate template strings: (ValueSource)
+        //   separate template strings: (Source)
         //      %awsssm:my.value% - instantiate an AwsSsmLoader with decrypt set to false
         //      %awsssm_decrypt:my.value% - instantiate an AwsSsmLoader with decrypt true
         self.get_parameter(key, true).await
@@ -80,7 +80,7 @@ impl crate::ValueLoader for AwsSsmLoader {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::ValueLoader;
+    use crate::Loader;
     use rusoto_mock::{
         MockCredentialsProvider, MockRequestDispatcher, MockResponseReader, ReadMockResponse,
     };

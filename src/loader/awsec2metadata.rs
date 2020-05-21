@@ -47,7 +47,7 @@ impl<'a> AwsEc2MetadataLoader<'a> {
 }
 
 #[async_trait::async_trait]
-impl<'a> crate::ValueLoader for AwsEc2MetadataLoader<'a> {
+impl<'a> crate::Loader for AwsEc2MetadataLoader<'a> {
     /// Loads a value from the AWS EC2 Metadata service and returns it as a `String`
     async fn load(&self, key: &str) -> Result<String> {
         self.get_value(key).await
@@ -57,7 +57,7 @@ impl<'a> crate::ValueLoader for AwsEc2MetadataLoader<'a> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::ValueLoader;
+    use crate::Loader;
     use mockito::mock;
 
     #[tokio::test]

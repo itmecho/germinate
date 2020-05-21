@@ -4,8 +4,8 @@
 //!
 //! ```norun
 //! // assuming something like this: `aws ssm put-parameter --name my.param --value "ssm value"`
-//! let input = String::from("SSM template: %awsssm:my.param%");
-//! let output = germinate::process(input);
+//! let input = germinate::Seed::new(String::from("SSM template: %awsssm:my.param%"));
+//! let output = seed.germinate().await.unwrap();
 //! assert_eq!(String::from("SSM template: ssm value"), output);
 //! ```
 use anyhow::{anyhow, Result};

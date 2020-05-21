@@ -3,8 +3,8 @@
 //! # Examples
 //!
 //! ```norun
-//! let input = String::from("Instance ID: %awsec2metadata:instance-id%");
-//! let output = germinate::process(input);
+//! let mut seed = germinate::Seed::new(String::from("Instance ID: %awsec2metadata:instance-id%"));
+//! let output = seed.germinate().await.unwrap();
 //! assert_eq!(String::from("Instance ID: i-abcdefgh123456789"), output);
 //! ```
 
@@ -20,7 +20,7 @@ pub struct AwsEc2MetadataLoader<'a> {
 }
 
 impl<'a> AwsEc2MetadataLoader<'a> {
-    /// Creates a new AwsEc2MetadataLoader
+    /// Creates a new AwsEc2MetadataLoader with the default AWS EC2 Metadata service endpoint
     pub fn new() -> Self {
         Self::with_base_url("http://169.254.169.254/latest/meta-data/")
     }

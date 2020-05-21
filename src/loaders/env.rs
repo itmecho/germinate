@@ -1,4 +1,12 @@
 //! Provides the ability to load values from the environment
+//!
+//! # Examples
+//! ```
+//! std::env::set_var("TEST_NAME", "John");
+//! let mut seed = germinate::Seed::new(String::from("Hi %env:TEST_NAME%"));
+//! let output = tokio::runtime::Runtime::new().unwrap().block_on(seed.germinate()).unwrap();
+//! assert_eq!("Hi John", output);
+//! ```
 use anyhow::Result;
 
 pub(crate) const TEMPLATE_KEY: &str = "env";

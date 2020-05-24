@@ -11,9 +11,14 @@ async fn main() -> Result<()> {
         .about("Template files using values from various sources")
         .author(crate_authors!())
         .version(crate_version!())
-        .arg(Arg::with_name("INPUT_FILE").required(true))
+        .arg(
+            Arg::with_name("INPUT_FILE")
+                .help("Template file to load and parse")
+                .required(true),
+        )
         .arg(
             Arg::with_name("output-file")
+                .help("Path to write the output to")
                 .short("o")
                 .long("output-file")
                 .takes_value(true)

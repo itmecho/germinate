@@ -7,7 +7,9 @@
 
 A templating library for injecting variables from multiple external sources
 
-## Example
+## Library
+
+### Example
 
 This is a simple example showing how to pull values from the environment
 
@@ -22,6 +24,19 @@ async fn main() {
 
     assert_eq!(String::from("Hi John Wick!"), output);
 }
+```
+
+## Binary
+Germinate provides a CLI for templating files, available from the Github releases. To run the CLI, cimply download the binary for your system and check the usage with `germinate --help`
+
+### Example
+
+```
+# To print the parsed result to stdout
+germinate myfile.txt.tmpl
+
+# To write the output to a file
+germinate myfile.txt.tmpl -o myfile.txt
 ```
 
 ## Sources

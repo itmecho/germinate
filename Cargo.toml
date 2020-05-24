@@ -22,3 +22,4 @@ tokio = { version = "0.2.21", features = ["full"] }
 rusoto_mock = "0.43.0"
 surf = "1.0.3"
 mockito = "0.25.1"
+rusoto_ec2 = "0.43.0"

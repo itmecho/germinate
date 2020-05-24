@@ -8,6 +8,7 @@ use regex::Regex;
 use std::collections::HashMap;
 
 use crate::loader::awsec2metadata::AwsEc2MetadataLoader;
+use crate::loader::awsec2tag::AwsEc2TagLoader;
 use crate::loader::awsssm::AwsSsmLoader;
 use crate::loader::env::EnvironmentLoader;
 
@@ -73,6 +74,7 @@ impl Seed {
         // an error as that should have been set using the add_custom_loader function before
         // parsing
         let loader: Box<dyn Loader> = match source {
+            Source::AwsEc2Tag => Box::new(AwsEc2TagLoader::new()),
             Source::AwsEc2Metadata => Box::new(AwsEc2MetadataLoader::new()),
             Source::AwsSsm => Box::new(AwsSsmLoader::new()),
             Source::Environment => Box::new(EnvironmentLoader::new()),

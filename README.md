@@ -30,6 +30,10 @@ Currently implemented sources:
 
 * `env` - Load values from environment variables
 * `awsssm` - Load values from the [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html)
+    * This source requires the `ssm:GetParameter` AWS IAM permission
+* `awsec2metadata` - Load values from the [AWS EC2 Metadata Service](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)
+* `awsec2tag` - Load values from an EC2 instance's tags. This can only access tags on the instance running `germinate`
+    * This source requires the instance to have the `ec2:DescribeInstances` AWS IAM permission
 
 ### Custom sources
 For an example of integrating your own value source, checkout the `Seed` struct in the [docs](https://docs.rs/germinate)

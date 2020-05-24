@@ -1,4 +1,5 @@
 pub(crate) mod awsec2metadata;
+pub(crate) mod awsec2tag;
 pub(crate) mod awsssm;
 pub(crate) mod env;
 
@@ -20,6 +21,7 @@ pub trait Loader {
 
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub(crate) enum Source {
+    AwsEc2Tag,
     AwsEc2Metadata,
     AwsSsm,
     Environment,
@@ -29,6 +31,7 @@ pub(crate) enum Source {
 impl Source {
     pub(crate) fn from<T: AsRef<str>>(key: T) -> Self {
         match key.as_ref() {
+            awsec2tag::TEMPLATE_KEY => Self::AwsEc2Tag,
             awsec2metadata::TEMPLATE_KEY => Self::AwsEc2Metadata,
             awsssm::TEMPLATE_KEY => Self::AwsSsm,
             env::TEMPLATE_KEY => Self::Environment,

@@ -1,8 +1,8 @@
 # Germinate
 
-[![Crates.io](https://img.shields.io/crates/v/germinate?style=flat-square)](https://crates.io/crates/germinate)
+[![Crates.io](https://img.shields.io/crates/v/germinate?style=flat-square&logo=rust)](https://crates.io/crates/germinate)
 [![docs.rs](https://img.shields.io/badge/docs-latest-blue?style=flat-square)](https://docs.rs/germinate)
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/itmecho/germinate/CI/master?style=flat-square)](https://github.com/itmecho/germinate/actions?query=workflow%3ACI)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/itmecho/germinate/CI/master?style=flat-square&logo=github)](https://github.com/itmecho/germinate/actions?query=workflow%3ACI)
 ![Crates.io](https://img.shields.io/crates/d/germinate?style=flat-square)
 
 A templating library for injecting variables from multiple external sources

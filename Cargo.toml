@@ -1,7 +1,7 @@
 [package]
 name = "germinate"
 description = "A templating library for injecting variables from multiple external sources"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Iain Earl <iain@itmecho.com>"]
 edition = "2018"
 license = "GPL-3.0"

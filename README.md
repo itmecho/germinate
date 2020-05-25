@@ -31,6 +31,8 @@ Germinate provides a CLI for templating files, available from the Github release
 
 ### Example
 
+The CLI can be used to parse an template file and output it either to `stdout` or optionally, an output file
+
 ```
 # To print the parsed result to stdout
 germinate myfile.txt.tmpl

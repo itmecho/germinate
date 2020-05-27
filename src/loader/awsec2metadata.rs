@@ -2,7 +2,7 @@
 //!
 //! # Examples
 //!
-//! ```norun
+//! ```ignore
 //! let mut seed = germinate::Seed::new(String::from("Instance ID: %awsec2metadata:instance-id%"));
 //! let output = seed.germinate().await.unwrap();
 //! assert_eq!(String::from("Instance ID: i-abcdefgh123456789"), output);

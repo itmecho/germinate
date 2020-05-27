@@ -2,7 +2,7 @@
 //!
 //! # Examples
 //!
-//! ```norun
+//! ```ignore
 //! // assuming something like this: `aws ssm put-parameter --name my.param --value "ssm value"`
 //! let input = germinate::Seed::new(String::from("SSM template: %awsssm:my.param%"));
 //! let output = seed.germinate().await.unwrap();

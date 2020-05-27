@@ -30,7 +30,7 @@ async fn main() -> Result<()> {
     let input = std::fs::read_to_string(matches.value_of("INPUT_FILE").unwrap())
         .context("Failed to read input file")?;
 
-    let mut seed = Seed::new(input);
+    let mut seed = Seed::new(&input);
     let output = seed.germinate().await?;
 
     // If no output file is given, write the output to stdout

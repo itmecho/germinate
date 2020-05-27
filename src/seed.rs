@@ -14,14 +14,14 @@ use crate::loader::env::EnvironmentLoader;
 
 /// A `Seed` is responsible for parsing the template string, loading the values, and optionally
 /// making the replacements via the germinate method
-pub struct Seed {
-    template: String,
+pub struct Seed<'a> {
+    template: &'a str,
     loaders: HashMap<Source, Box<dyn Loader>>,
 }
 
-impl Seed {
+impl<'a> Seed<'a> {
     /// Create a new `Seed` with the given template string
-    pub fn new(template: String) -> Self {
+    pub fn new(template: &'a str) -> Self {
         Self {
             template,
             loaders: HashMap::new(),
@@ -52,7 +52,7 @@ impl Seed {
     /// async fn main() {
     ///     std::env::set_var("NAME", "John");
     ///
-    ///     let mut seed = Seed::new("Hi %env:NAME%, Welcome to %language:rust%! Say goodbye to %language:go%...".into());
+    ///     let mut seed = Seed::new("Hi %env:NAME%, Welcome to %language:rust%! Say goodbye to %language:go%...");
     ///     seed.add_custom_loader("language".into(), Box::new(LanguageLoader{}));
     ///     let output = seed.germinate().await.unwrap();
     ///
@@ -104,7 +104,7 @@ impl Seed {
     /// async fn main() {
     ///     std::env::set_var("NAME", "John");
     ///
-    ///     let mut seed = germinate::Seed::new("Hi %env:NAME%, Welcome to Rust!".into());
+    ///     let mut seed = germinate::Seed::new("Hi %env:NAME%, Welcome to Rust!");
     ///     let replacements = seed.parse().await.unwrap();
     ///
     ///     assert_eq!(replacements.get("%env:NAME%").unwrap(), &String::from("John"));
@@ -150,7 +150,7 @@ impl Seed {
     /// async fn main() {
     ///     std::env::set_var("NAME", "John");
     ///
-    ///     let mut seed = germinate::Seed::new("Hi %env:NAME%, Welcome to Rust!".into());
+    ///     let mut seed = germinate::Seed::new("Hi %env:NAME%, Welcome to Rust!");
     ///     let output = seed.germinate().await.unwrap();
     ///
     ///     assert_eq!(String::from("Hi John, Welcome to Rust!"), output);
@@ -158,7 +158,7 @@ impl Seed {
     ///
     /// ```
     pub async fn germinate(&mut self) -> Result<String> {
-        let mut output = self.template.clone();
+        let mut output = self.template.to_string();
 
         for (k, v) in self.parse().await? {
             output = output.replace(&k, &v);
@@ -195,7 +195,7 @@ mod test {
     async fn test_germinate_basic() {
         std::env::set_var("TEST_VAR", "Test");
 
-        let mut seed = Seed::new(String::from("Test %env:TEST_VAR% Test"));
+        let mut seed = Seed::new("Test %env:TEST_VAR% Test");
         let output = seed.germinate().await.unwrap();
 
         assert_eq!(String::from("Test Test Test"), output);
@@ -203,7 +203,7 @@ mod test {
 
     #[tokio::test]
     async fn test_geminate_with_custom_loader() {
-        let mut seed = Seed::new(String::from("Test %custom:test% Test"));
+        let mut seed = Seed::new("Test %custom:test% Test");
         seed.add_custom_loader(
             "custom".into(),
             Box::new(TestLoader::with_value("Test".into())),

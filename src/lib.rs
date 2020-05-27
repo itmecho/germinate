@@ -20,7 +20,7 @@
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), Box<dyn Error>> {
 //! # std::env::set_var("NAME", "John");
-//! let mut seed = Seed::new("Hi %env:NAME%!".to_string());
+//! let mut seed = Seed::new("Hi %env:NAME%!");
 //! let output = seed.germinate().await?;
 //!
 //! assert_eq!("Hi John!", output);
@@ -47,7 +47,7 @@
 //! # }
 //! # #[tokio::main]
 //! # async fn main() -> Result<(), Box<dyn Error>>{
-//! let mut seed = Seed::new("Hi %name:name%".to_string());
+//! let mut seed = Seed::new("Hi %name:name%");
 //!
 //! // Add a custom loader for the name key. This is the loader that will be used whenever
 //! // germinate finds %name:...% in the template string

@@ -3,7 +3,7 @@
 //! # Examples
 //! ```
 //! std::env::set_var("TEST_NAME", "John");
-//! let mut seed = germinate::Seed::new(String::from("Hi %env:TEST_NAME%"));
+//! let mut seed = germinate::Seed::new("Hi %env:TEST_NAME%");
 //! let output = tokio::runtime::Runtime::new().unwrap().block_on(seed.germinate()).unwrap();
 //! assert_eq!("Hi John", output);
 //! ```

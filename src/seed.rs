@@ -115,7 +115,7 @@ impl<'a> Seed<'a> {
 
         let pattern = Regex::new(r"(%([a-z0-9]+):([^%]+)%)").unwrap();
 
-        for capture in pattern.captures_iter(self.template.clone().as_ref()) {
+        for capture in pattern.captures_iter(self.template) {
             // capture[1] will be the find string. If the map contains the key then we have already
             // processed this replacement
             if replacements.contains_key(&capture[1].to_string()) {

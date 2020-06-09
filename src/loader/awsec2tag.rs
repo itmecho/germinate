@@ -14,7 +14,8 @@ pub struct AwsEc2TagLoader<'a> {
 impl<'a> AwsEc2TagLoader<'a> {
     /// Creates a new AwsEc2TagLoader with the default region
     pub fn new() -> Self {
-        // TODO hard coded region - should be configurable
+        // This will attempt to read AWS_DEFAULT_REGION and AWS_REGION from the environment. If
+        // neither are set, it will fallback to us-east-1
         let client = Ec2Client::new(Region::default());
         Self::with_client(client)
     }

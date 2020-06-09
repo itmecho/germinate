@@ -22,7 +22,8 @@ pub struct AwsSsmLoader {
 impl AwsSsmLoader {
     /// Creates a new AwsSsmLoader with the default region
     pub fn new() -> Self {
-        // TODO hard coded region - should be configurable
+        // This will attempt to read AWS_DEFAULT_REGION and AWS_REGION from the environment. If
+        // neither are set, it will fallback to us-east-1
         let client = SsmClient::new(Region::default());
         Self::with_client(client)
     }

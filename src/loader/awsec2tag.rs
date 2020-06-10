@@ -60,7 +60,7 @@ impl<'a> AwsEc2TagLoader<'a> {
             .as_ref()
             .ok_or_else(|| anyhow!("Tags missing from response"))?
             .iter()
-            .filter(|t| t.key.as_ref().unwrap_or(&"".into()) == key)
+            .filter(|t| t.key.as_ref().unwrap_or(&"".into()).to_lowercase() == key.to_lowercase())
             .collect::<Vec<&rusoto_ec2::Tag>>()
             .first()
             .ok_or_else(|| anyhow!("Tag with key '{}' not found", key))?
@@ -115,25 +115,29 @@ mod test {
         assert_eq!(String::from("test value"), actual);
     }
 
-    // #[tokio::test]
-    // async fn test_ssm_load_parameter_not_found() {
-    //     let mock_client = rusoto_ssm::SsmClient::new_with(
-    //         MockRequestDispatcher::with_status(400).with_body(&MockResponseReader::read_response(
-    //             "testdata/awsssm",
-    //             "get-parameter-not-found-response.json",
-    //         )),
-    //         MockCredentialsProvider,
-    //         Default::default(),
-    //     );
+    #[tokio::test]
+    async fn test_aws_ec2_tag_load_is_case_insensitive() {
+        let mock_client = rusoto_ec2::Ec2Client::new_with(
+            MockRequestDispatcher::default().with_body(&MockResponseReader::read_response(
+                "testdata/awsec2tag",
+                // Taken from https://github.com/rusoto/rusoto/tree/master/rusoto/services/ec2/test_resources/generated
+                "describe-instances-response.xml",
+            )),
+            MockCredentialsProvider,
+            Default::default(),
+        );
 
-    //     let loader = AwsSsmLoader::with_client(mock_client);
-    //     let actual = loader.load("test.param").await;
+        let m = mockito::mock("GET", "/instance-id")
+            .with_status(200)
+            .with_body("i-01234567890123456")
+            .expect(1)
+            .create();
 
-    //     assert!(actual.is_err());
+        let url = &mockito::server_url();
+        let loader = AwsEc2TagLoader::with_client_and_metadata_url(mock_client, url);
+        let actual = loader.load("testtag").await.unwrap();
 
-    //     match actual {
-    //         Err(err) => assert!(format!("{:?}", err).contains("Parameter not found")),
-    //         _ => assert!(false),
-    //     }
-    // }
+        m.assert();
+        assert_eq!(String::from("test value"), actual);
+    }
 }

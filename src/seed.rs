@@ -63,7 +63,7 @@ impl<'a> Seed<'a> {
         self.loaders.insert(Source::Custom(key), loader);
     }
 
-    fn get_loader(&mut self, source: &Source) -> Result<&dyn Loader> {
+    async fn get_loader(&mut self, source: &Source) -> Result<&dyn Loader> {
         // If a loader with the given key exists, return it
         if self.loaders.contains_key(source) {
             // Unwrap should be safe here as we know the key exists
@@ -74,7 +74,7 @@ impl<'a> Seed<'a> {
         // an error as that should have been set using the add_custom_loader function before
         // parsing
         let loader: Box<dyn Loader> = match source {
-            Source::AwsEc2Tag => Box::new(AwsEc2TagLoader::new()),
+            Source::AwsEc2Tag => Box::new(AwsEc2TagLoader::new().await?),
             Source::AwsEc2Metadata => Box::new(AwsEc2MetadataLoader::new()),
             Source::AwsSsm => Box::new(AwsSsmLoader::new()),
             Source::Environment => Box::new(EnvironmentLoader::new()),
@@ -125,6 +125,7 @@ impl<'a> Seed<'a> {
             let source = Source::from(&capture[2]);
             let loader = self
                 .get_loader(&source)
+                .await
                 .context("Failed to parse template string")?;
 
             // This is the key to use when loading the value

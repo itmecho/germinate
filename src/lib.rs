@@ -4,14 +4,19 @@
 //! loading of the variables in a standard way.
 //!
 //! # Sources
+//! ## Optional features
+//! * `default` - `["aws"]`
+//! * `aws` - Enable the AWS value sources
+//!
 //! ## Built In
 //! These are the currently implemented sources and their associated template keys
 //!
-//! | Source | Key | Description |
-//! |-|-|-|
-//! | [AWS EC2 Instance Tags](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html) | `awsec2tag` | Load the value of AWS EC2 Instance Tags by their key |
-//! | [AWS EC2 Metadata Service](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html) | `awsec2metadata` | Load a value from the AWS EC2 Metadata Service by it's path |
-//! | Environment Variables | `env` | Load the value of an environment variable |
+//! | Source | Key | Feature | Description |
+//! |-|-|-|-|
+//! | [AWS EC2 Instance Tags](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html) | `awsec2tag` | `aws` | Load the value of AWS EC2 Instance Tags by their key |
+//! | [AWS EC2 Metadata Service](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html) | `awsec2metadata` | `aws` | Load a value from the AWS EC2 Metadata Service by it's path |
+//! | [AWS EC2 Tag](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html) | `awsec2tag` | `aws` | Load a value from an AWS EC2 Tag by it's key |
+//! | Environment Variables | `env` | `-` | Load the value of an environment variable |
 //!
 //! ### Example
 //! ```rust

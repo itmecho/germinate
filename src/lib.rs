@@ -3,11 +3,11 @@
 //! [`Loader`](https://docs.rs/germinate/*/germinate/trait.Loader.html) trait which handles the
 //! loading of the variables in a standard way.
 //!
-//! # Sources
-//! ## Optional features
+//! # Features
 //! * `default` - `["aws"]`
 //! * `aws` - Enable the AWS value sources
 //!
+//! # Sources
 //! ## Built In
 //! These are the currently implemented sources and their associated template keys
 //!

@@ -76,7 +76,7 @@ mod test {
             .with_body(expected)
             .create();
 
-        let mut url = String::from(mockito::server_url());
+        let mut url = mockito::server_url();
         url.push('/');
         let loader = AwsEc2MetadataLoader::with_base_url(&url);
 

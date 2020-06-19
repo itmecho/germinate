@@ -121,7 +121,7 @@ mod test {
 
         match actual {
             Err(err) => assert!(format!("{:?}", err).contains("Parameter not found")),
-            _ => assert!(false),
+            _ => panic!(),
         }
     }
 }

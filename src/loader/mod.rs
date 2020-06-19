@@ -1,6 +1,12 @@
+#[cfg(feature = "aws")]
 pub(crate) mod awsec2metadata;
+
+#[cfg(feature = "aws")]
 pub(crate) mod awsec2tag;
+
+#[cfg(feature = "aws")]
 pub(crate) mod awsssm;
+
 pub(crate) mod env;
 
 use anyhow::Result;
@@ -21,8 +27,13 @@ pub trait Loader {
 
 #[derive(Clone, Debug, Hash, Eq, PartialEq)]
 pub(crate) enum Source {
+    #[cfg(feature = "aws")]
     AwsEc2Tag,
+
+    #[cfg(feature = "aws")]
     AwsEc2Metadata,
+
+    #[cfg(feature = "aws")]
     AwsSsm,
     Environment,
     Custom(String),
@@ -31,10 +42,17 @@ pub(crate) enum Source {
 impl Source {
     pub(crate) fn from<T: AsRef<str>>(key: T) -> Self {
         match key.as_ref() {
+            #[cfg(feature = "aws")]
             awsec2tag::TEMPLATE_KEY => Self::AwsEc2Tag,
+
+            #[cfg(feature = "aws")]
             awsec2metadata::TEMPLATE_KEY => Self::AwsEc2Metadata,
+
+            #[cfg(feature = "aws")]
             awsssm::TEMPLATE_KEY => Self::AwsSsm,
+
             env::TEMPLATE_KEY => Self::Environment,
+
             key => Self::Custom(key.to_string()),
         }
     }

@@ -7,8 +7,11 @@ use anyhow::{anyhow, Context, Result};
 use regex::Regex;
 use std::collections::HashMap;
 
+#[cfg(feature = "aws")]
 use crate::loader::awsec2metadata::AwsEc2MetadataLoader;
+#[cfg(feature = "aws")]
 use crate::loader::awsec2tag::AwsEc2TagLoader;
+#[cfg(feature = "aws")]
 use crate::loader::awsssm::AwsSsmLoader;
 use crate::loader::env::EnvironmentLoader;
 
@@ -74,10 +77,17 @@ impl<'a> Seed<'a> {
         // an error as that should have been set using the add_custom_loader function before
         // parsing
         let loader: Box<dyn Loader> = match source {
+            #[cfg(feature = "aws")]
             Source::AwsEc2Tag => Box::new(AwsEc2TagLoader::new().await?),
+
+            #[cfg(feature = "aws")]
             Source::AwsEc2Metadata => Box::new(AwsEc2MetadataLoader::new()),
+
+            #[cfg(feature = "aws")]
             Source::AwsSsm => Box::new(AwsSsmLoader::new()),
+
             Source::Environment => Box::new(EnvironmentLoader::new()),
+
             Source::Custom(key) => return Err(
                 anyhow!(
                     "Unsupported value source: {}. If you're using a custom source, make sure you added the loader before parsing",

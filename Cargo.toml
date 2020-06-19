@@ -21,8 +21,7 @@ rusoto_core = { version = "0.43.0", optional = true }
 rusoto_ec2 = { version = "0.43.0", optional = true }
 rusoto_ssm = { version = "0.43.0", optional = true }
 surf = "1.0.3"
-# TODO check if we can use a subset of features
-tokio = { version = "0.2.21", features = ["full"] }
+tokio = { version = "0.2.21", features = ["macros"] }
 
 [dev-dependencies]
 mockito = "0.25.1"

@@ -15,16 +15,18 @@ readme = "README.md"
 anyhow = "1.0.30"
 async-trait = "0.1.36"
 clap = "2.33.1"
-mockito = "0.25.1"
 native-tls = { version = "0.2", optional = true }
 regex = "1.3.7"
 rusoto_core = "0.43.0"
 rusoto_ec2 = "0.43.0"
-rusoto_mock = "0.43.0"
 rusoto_ssm = "0.43.0"
 surf = "1.0.3"
 # TODO check if we can use a subset of features
 tokio = { version = "0.2.21", features = ["full"] }
+
+[dev-dependencies]
+mockito = "0.25.1"
+rusoto_mock = "0.43.0"
 
 [features]
 tls-vendored = ["native-tls/vendored"]

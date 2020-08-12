@@ -22,7 +22,7 @@ These are the currently implemented sources and their associated template keys
 |-|-|-|-|
 | [AWS EC2 Instance Tags](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html) | `awsec2tag` | `aws` | Load the value of AWS EC2 Instance Tags by their key |
 | [AWS EC2 Metadata Service](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html) | `awsec2metadata` | `aws` | Load a value from the AWS EC2 Metadata Service by it's path |
-| [AWS EC2 Tag](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html) | `awsec2tag` | `aws` | Load a value from an AWS EC2 Tag by it's key |
+| [AWS SSM Parameter](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html) | `awsssm` | `aws` | Load a value from the AWS SSM Parameter Store by it's name. **LIMITATION** when running on an EC2 instance, the parameter must be in the same region as the instance |
 | Environment Variables | `env` | `-` | Load the value of an environment variable |
 
 #### Example

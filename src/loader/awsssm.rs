@@ -21,11 +21,15 @@ pub struct AwsSsmLoader {
 
 impl AwsSsmLoader {
     /// Creates a new AwsSsmLoader with the default region
-    pub fn new() -> Self {
+    pub async fn new() -> Result<Self> {
         // This will attempt to read AWS_DEFAULT_REGION and AWS_REGION from the environment. If
         // neither are set, it will fallback to us-east-1
-        let client = SsmClient::new(Region::default());
-        Self::with_client(client)
+        let region: Region = crate::loader::awsec2metadata::get_current_region()
+            .await?
+            .parse()
+            .unwrap_or_default();
+        let client = SsmClient::new(region);
+        Ok(Self::with_client(client))
     }
 
     /// Creates a new AwsSsmLoader with the provided SsmClient

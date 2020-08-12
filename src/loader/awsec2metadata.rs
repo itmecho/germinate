@@ -52,6 +52,15 @@ pub(crate) async fn get_metadata_value(base_url: &str, path: &str) -> Result<Str
     Ok(value)
 }
 
+pub(crate) async fn get_current_region_from_url(base_url: &str) -> Result<String> {
+    let r = get_metadata_value(base_url, "placement/availability-zone").await?;
+    Ok(r.trim_end_matches(char::is_alphabetic).to_string())
+}
+
+pub(crate) async fn get_current_region() -> Result<String> {
+    get_current_region_from_url(METADATA_BASE_URL).await
+}
+
 #[async_trait::async_trait]
 impl crate::Loader for AwsEc2MetadataLoader<'_> {
     /// Loads a value from the AWS EC2 Metadata service and returns it as a `String`
@@ -70,7 +79,7 @@ mod test {
     async fn test_aws_ec2_metadata_basic() {
         let expected = "test-id";
 
-        let _m = mock("GET", "/instance-id")
+        let m = mock("GET", "/instance-id")
             .with_status(200)
             .with_header("Content-Type", "text/plain")
             .with_body(expected)
@@ -80,8 +89,29 @@ mod test {
         url.push('/');
         let loader = AwsEc2MetadataLoader::with_base_url(&url);
 
-        let actual = loader.load("instance-id").await;
+        let actual = loader.load("instance-id").await.unwrap();
+        m.assert();
 
-        assert_eq!(expected, actual.unwrap());
+        assert_eq!(expected, actual);
+    }
+
+    #[tokio::test]
+    async fn test_get_current_region() {
+        let az = "us-east-1a";
+        let expected = "us-east-1";
+
+        let m = mock("GET", "/placement/availability-zone")
+            .with_status(200)
+            .with_header("Content-Type", "text/plain")
+            .with_body(az)
+            .create();
+
+        let mut url = mockito::server_url();
+        url.push('/');
+
+        let actual = get_current_region_from_url(&url).await.unwrap();
+        m.assert();
+
+        assert_eq!(expected, actual);
     }
 }

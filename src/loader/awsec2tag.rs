@@ -15,7 +15,11 @@ impl AwsEc2TagLoader {
     pub async fn new() -> Result<Self> {
         // This will attempt to read AWS_DEFAULT_REGION and AWS_REGION from the environment. If
         // neither are set, it will fallback to us-east-1
-        let client = Ec2Client::new(Region::default());
+        let region: Region = crate::loader::awsec2metadata::get_current_region()
+            .await?
+            .parse()
+            .unwrap_or_default();
+        let client = Ec2Client::new(region);
         Self::with_client(client).await
     }
 

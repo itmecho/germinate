@@ -84,7 +84,7 @@ impl<'a> Seed<'a> {
             Source::AwsEc2Metadata => Box::new(AwsEc2MetadataLoader::new()),
 
             #[cfg(feature = "aws")]
-            Source::AwsSsm => Box::new(AwsSsmLoader::new()),
+            Source::AwsSsm => Box::new(AwsSsmLoader::new().await?),
 
             Source::Environment => Box::new(EnvironmentLoader::new()),
 

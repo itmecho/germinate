@@ -1,13 +1,13 @@
 //! Provides the ability to asynchronously load values from [AWS EC2 Tags](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html)
 use anyhow::{anyhow, Result};
 use rusoto_core::Region;
-use rusoto_ec2::{DescribeInstancesRequest, Ec2, Ec2Client, Tag};
+use rusoto_ec2::{DescribeTagsRequest, Ec2, Ec2Client, Filter, TagDescription};
 
 pub(crate) const TEMPLATE_KEY: &str = "awsec2tag";
 
 /// This type provides functionality for loading values from [AWS EC2 Tags](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html)
 pub struct AwsEc2TagLoader {
-    tags: Vec<Tag>,
+    tags: Vec<TagDescription>,
 }
 
 impl AwsEc2TagLoader {
@@ -37,24 +37,18 @@ impl AwsEc2TagLoader {
         let instance_id =
             crate::loader::awsec2metadata::get_metadata_value(metadata_url, "instance-id").await?;
 
-        let mut req = DescribeInstancesRequest::default();
-        req.instance_ids = Some(vec![instance_id]);
+        let mut req = DescribeTagsRequest::default();
+        req.filters = Some(Vec::from([Filter {
+            name: Some("resource-id".to_string()),
+            values: Some(Vec::from([instance_id])),
+        }]));
 
-        let response = match client.describe_instances(req).await {
+        let response = match client.describe_tags(req).await {
             Ok(response) => response,
             Err(e) => return Err(anyhow!("Failed to fetch tag value: {}", e)),
         };
 
         let tags = response
-            .reservations
-            .ok_or_else(|| anyhow!("Reservations missing from response"))?
-            .first()
-            .ok_or_else(|| anyhow!("No Reservations found"))?
-            .instances
-            .as_ref()
-            .ok_or_else(|| anyhow!("Instances missing from response"))?
-            .first()
-            .ok_or_else(|| anyhow!("No Instances found"))?
             .tags
             .as_ref()
             .ok_or_else(|| anyhow!("Tags missing from response"))?
@@ -68,8 +62,10 @@ impl AwsEc2TagLoader {
         let value = self
             .tags
             .iter()
-            .filter(|t| t.key.as_ref().unwrap_or(&"".into()).to_lowercase() == key.to_lowercase())
-            .collect::<Vec<&rusoto_ec2::Tag>>()
+            .filter(|t| {
+                t.key.as_ref().unwrap_or(&String::new()).to_lowercase() == key.to_lowercase()
+            })
+            .collect::<Vec<&rusoto_ec2::TagDescription>>()
             .first()
             .ok_or_else(|| anyhow!("Tag with key '{}' not found", key))?
             .value

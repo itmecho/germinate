@@ -37,8 +37,10 @@ impl AwsEc2TagLoader {
         let instance_id =
             crate::loader::awsec2metadata::get_metadata_value(metadata_url, "instance-id").await?;
 
-        let mut req = DescribeInstancesRequest::default();
-        req.instance_ids = Some(vec![instance_id]);
+        let req = DescribeInstancesRequest {
+            instance_ids: Some(vec![instance_id]),
+            ..Default::default()
+        };
 
         let response = match client.describe_instances(req).await {
             Ok(response) => response,
